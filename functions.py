@@ -1,4 +1,5 @@
-import time
+import os
+import markdown
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -6,9 +7,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options 
+from colorama import Fore
 
-def Get_distance(address_from, address_to, sleep_time=0.5, attempt_to_load_time =10, headless = True):
-    
+def Get_distance(address_from, address_to, sleep_time=0.5, attempt_to_load_time=10, headless=True):
     if str(address_from) == 'nan' or str(address_from) == '':
         return [address_from, 
                 address_to, 
@@ -29,9 +30,10 @@ def Get_distance(address_from, address_to, sleep_time=0.5, attempt_to_load_time 
                 '']
 
     try:
-        if headless == True:
+        if not headless:
             options = Options()
-            options.add_argument("--headless=new")
+            # options.add_argument("--headless=new")
+            options.add_argument("--headless")            
             options.add_argument("--window-position=-1920,0")
             driver = webdriver.Chrome(options=options)
             driver.implicitly_wait(1)
@@ -176,17 +178,6 @@ def Get_distance(address_from, address_to, sleep_time=0.5, attempt_to_load_time 
                 'Не удалось получить для грузовика',
                 '']
 
-"""
-print(
-    Get_distance(
-        '410062, г.Саратов, Трофимовская ул., 30с1',
-        'Саратовская область, Энгельс, улица Ленина, 210',
-        sleep_time=1, 
-        attempt_to_load_time =10,
-        headless = False
-        )
-    )
-"""
 
 def Run(headless, run_number, routs_qty, df_to_run):
     i = 0
@@ -196,7 +187,7 @@ def Run(headless, run_number, routs_qty, df_to_run):
         i += 1
         address_from = row[1]
         address_to   = row[2]
-        print('-'*100)
+        print(Fore.BLACK, '-'*100)
         print('Прогон %s Парсим %s из %s Откуда: %s Куда: %s'%(run_number, i, routs_qty, address_from,address_to), sep ='\t')
 
         row_result = Get_distance(
@@ -210,3 +201,14 @@ def Run(headless, run_number, routs_qty, df_to_run):
             result_false_list.append(row_result)    
         print(row_result,'\n')
     return (result_true_list, result_false_list)    
+
+def show_manual():
+    with open('README.md', 'r', encoding='utf-8') as f:
+        markdown_string = f.read()
+    
+    html_string = "<title>GET_DISTANCE_AUTO</title>\n" +  markdown.markdown(markdown_string)
+    
+    with open('READMY.html', 'w') as f:
+        f.write(html_string)
+
+    os.startfile('READMY.html')
