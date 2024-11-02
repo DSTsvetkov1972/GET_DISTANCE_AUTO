@@ -132,7 +132,9 @@ while True:
             Fore.WHITE)
         
     print(Fore.MAGENTA)
-    print(f"Результат сохранен в файле {resfilename}", Fore.RESET)
+    print("Результат сохранен в файле:")
+    print(Fore.GREEN)
+    print(resfilename, Fore.RESET)
 
     os.startfile(resfilename)     
 
